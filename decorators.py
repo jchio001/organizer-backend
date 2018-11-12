@@ -21,8 +21,13 @@ def ValidateGoogleIdToken(f):
             response.status_code = HTTPStatus.BAD_REQUEST
             return response
 
-        id_token_info = id_token.verify_oauth2_token(google_id_token, requests.Request(), google_server_client_id)
-        logging.info(id_token_info)
+        try:
+            id_token_info = id_token.verify_oauth2_token(google_id_token, requests.Request(), google_server_client_id)
+            logging.info(id_token_info)
+        except ValueError as e:
+            response = jsonify({'error': str(e)})
+            response.status_code = HTTPStatus.UNAUTHORIZED
+            return response
 
         if id_token_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com'] \
             or id_token_info['aud'] != google_server_client_id:

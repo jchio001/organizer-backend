@@ -20,7 +20,8 @@ def get_places(query_string='a', location=None):
         if error_message:
             return {'error': error_message}
         else:
-            return {'error': 'Google places API returned status %s' % places_response_json.get('status')}
+            return {'error': 'Google places API returned status %s' % places_response_json.get('status')}, \
+                   HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 def transform_places_dict(places_dict):

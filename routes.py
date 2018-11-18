@@ -21,8 +21,8 @@ def connect_with_google(*args, **kwargs):
 @app.route('/places', methods=['GET'])
 @ValidateJwtToken
 def get_places():
-    response_dict, status_code = places_client.get_places(request.args.get('input'),
-                                                          request.args.get('location'))
+    response_dict, status_code = places_client.get_places(query_string=request.args.get('input'),
+                                                          location=request.args.get('location'))
     return json.dumps(response_dict), status_code
 
 

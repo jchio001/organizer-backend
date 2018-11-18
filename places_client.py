@@ -18,7 +18,7 @@ def get_places(query_string='a', location=None):
     else:
         error_message = places_response_json.get('error_message')
         if error_message:
-            return {'error': error_message}
+            return {'error': error_message}, HTTPStatus.INTERNAL_SERVER_ERROR
         else:
             return {'error': 'Google places API returned status %s' % places_response_json.get('status')}, \
                    HTTPStatus.INTERNAL_SERVER_ERROR

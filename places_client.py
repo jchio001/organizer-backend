@@ -8,10 +8,9 @@ google_places_nearby_url_template = 'https://maps.googleapis.com/maps/api/place/
                                     '&radius=5000&key=' + os.environ['FOOD_ORGANIZER_GOOGLE_API_KEY']
 
 
-def get_places(query_string, location):
+def get_places(query_string='a', location=None):
     places_response = requests.get(google_places_nearby_url_template
-                                  % (query_string if query_string else 'a',
-                                     f'&location={location}' if location else ""))
+                                  % (query_string, f'&location={location}' if location else ""))
 
     places_response_json = json.loads(places_response.content)
     if places_response.status_code == HTTPStatus.OK and places_response_json.get('status') == "OK":

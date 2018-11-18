@@ -29,4 +29,4 @@ def create_or_update_account(updated_account):
                 .filter_by(google_id=updated_account.google_id) \
                 .first()
 
-    return {'token': jwt_token_utils.create_savory_token(existing_account)}, HTTPStatus.OK
+    return {'token': jwt_token_utils.create_jwt_token(existing_account)}, HTTPStatus.OK

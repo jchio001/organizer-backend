@@ -1,9 +1,10 @@
-from decorators import ValidateGoogleIdToken
-from flask import Flask
+from decorators import ValidateGoogleIdToken, ValidateJwtToken
+from flask import Flask, request
 
 import account_client
 import json
 import logging
+import places_client
 
 app = Flask(__name__)
 
@@ -14,6 +15,14 @@ logging.basicConfig(level=logging.INFO)
 @ValidateGoogleIdToken
 def connect_with_google(*args, **kwargs):
     response_dict, status_code = account_client.create_or_update_account(kwargs.get('account'))
+    return json.dumps(response_dict), status_code
+
+
+@app.route('/places', methods=['GET'])
+@ValidateJwtToken
+def get_places():
+    response_dict, status_code = places_client.get_places(request.args.get('input'),
+                                                          request.args.get('location'))
     return json.dumps(response_dict), status_code
 
 

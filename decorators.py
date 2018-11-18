@@ -3,8 +3,10 @@ from functools import wraps
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from http import HTTPStatus
+from jwt import DecodeError
 from models import Account
 
+import jwt_token_utils
 import logging
 import os
 
@@ -13,7 +15,7 @@ google_server_client_id = os.environ['FOOD_ORGANIZER_GOOGLE_SERVER_CLIENT_ID']
 
 def ValidateGoogleIdToken(f):
     @wraps(f)
-    def validate_user(*args, **kwargs):
+    def validate_google_id_token(*args, **kwargs):
         google_id_token = request.args.get('google_id_token')
 
         if not google_id_token:
@@ -42,4 +44,26 @@ def ValidateGoogleIdToken(f):
                                                   email = id_token_info.get('email'),
                                                   profile_photo = id_token_info.get('picture')))
 
-    return validate_user
+    return validate_google_id_token
+
+
+def ValidateJwtToken(f):
+    @wraps(f)
+    def validate_jwt_token(*args, **kwargs):
+        jwt_token = request.headers.get('authorization')
+
+        if not jwt_token:
+            response = jsonify({'error': 'Token not present.'})
+            response.status_code = HTTPStatus.BAD_REQUEST
+            return response
+
+        try:
+            jwt_token_info = jwt_token_utils.decode_jwt_token(jwt_token)
+        except DecodeError:
+            response = jsonify({'error': 'Invalid token supplied.'})
+            response.status_code = HTTPStatus.UNAUTHORIZED
+            return response
+
+        return f(*args, **kwargs)
+
+    return validate_jwt_token

@@ -66,7 +66,7 @@ def ValidateJwtToken(f):
             response.status_code = HTTPStatus.UNAUTHORIZED
             return response
 
-        account = account_client.get_account(jwt_token_info.get('id'))
+        account = account_client.get_account(jwt_token_info.get('sub'))
         if not account:
             response = jsonify({'error': 'Associated account does not exist.'})
             response.status_code = HTTPStatus.UNAUTHORIZED

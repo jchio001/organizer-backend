@@ -13,7 +13,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-@app.route('/connect', methods=['POST'])
+@app.route('/connect', methods=['PUT'])
 @ValidateGoogleIdToken
 def connect_with_google(*args, **kwargs):
     response_dict, status_code = account_client.create_or_update_account(kwargs.get('account'))
@@ -29,7 +29,7 @@ def exchange_token(*args, **kwargs):
 
 @app.route('/places', methods=['GET'])
 @ValidateJwtToken
-def get_places():
+def get_places(*args, **kwargs):
     response_dict, status_code = places_client.get_places(query_string=request.args.get('input'),
                                                           location=request.args.get('location'))
     return json.dumps(response_dict), status_code

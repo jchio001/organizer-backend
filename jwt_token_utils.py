@@ -9,7 +9,7 @@ jwt_secret = os.environ['FOOD_ORGANIZER_JWT_SECRET']
 def create_jwt_token(account):
     token_creation = int(time.time())
     token_expiration = token_creation + 2592000
-    return jwt.encode({'id': account.id, 'iat': token_creation, 'exp': token_expiration},
+    return jwt.encode({'sub': account.id, 'iat': token_creation, 'exp': token_expiration},
                       jwt_secret,
                       algorithm='HS512')\
         .decode('utf-8')

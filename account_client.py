@@ -30,3 +30,10 @@ def create_or_update_account(updated_account):
                 .first()
 
     return {'token': jwt_token_utils.create_jwt_token(existing_account)}, HTTPStatus.OK
+
+
+def get_account(account_id):
+    return session\
+        .query(Account)\
+        .filter_by(id=account_id)\
+        .first()

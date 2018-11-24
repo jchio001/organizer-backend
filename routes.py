@@ -1,8 +1,10 @@
 from decorators import ValidateGoogleIdToken, ValidateJwtToken
 from flask import Flask, request
+from http import HTTPStatus
 
 import account_client
 import json
+import jwt_token_utils
 import logging
 import places_client
 
@@ -11,11 +13,18 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-@app.route('/connect', methods=['PUT'])
+@app.route('/connect', methods=['POST'])
 @ValidateGoogleIdToken
 def connect_with_google(*args, **kwargs):
     response_dict, status_code = account_client.create_or_update_account(kwargs.get('account'))
     return json.dumps(response_dict), status_code
+
+
+@app.route('/token')
+@ValidateJwtToken
+def exchange_token(*args, **kwargs):
+    response_dict = {'token': jwt_token_utils.create_jwt_token(kwargs.get('account'))}
+    return json.dumps(response_dict), HTTPStatus.OK
 
 
 @app.route('/places', methods=['GET'])

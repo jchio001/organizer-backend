@@ -6,9 +6,11 @@ from http import HTTPStatus
 from jwt import DecodeError
 from models import Account
 
+import account_client
 import jwt_token_utils
 import logging
 import os
+import time
 
 google_server_client_id = os.environ['FOOD_ORGANIZER_GOOGLE_SERVER_CLIENT_ID']
 
@@ -64,6 +66,18 @@ def ValidateJwtToken(f):
             response.status_code = HTTPStatus.UNAUTHORIZED
             return response
 
-        return f(*args, **kwargs)
+        account = account_client.get_account(jwt_token_info.get('id'))
+        if not account:
+            response = jsonify({'error': 'Associated account does not exist.'})
+            response.status_code = HTTPStatus.UNAUTHORIZED
+            return response
+
+        now = int(time.time())
+        if jwt_token_info.get('exp') < now:
+            response = jsonify({'error': 'Expired token.'})
+            response.status_code = HTTPStatus.UNAUTHORIZED
+            return response
+
+        return f(*args, **kwargs, account=account)
 
     return validate_jwt_token

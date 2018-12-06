@@ -70,8 +70,9 @@ heroku apps:create <whatever name you want here>
 ```
 
 You may have to provision an instance of PSQL (unsure if creating a Heroku app from command line creates an instance by 
-default). If so, you can do so through the `Resources` tab for your Heroku app on Heroku's website. If you're feeling 
-lazy, here's a button for you to press:
+default). If so, you can do so through the `Resources` tab for your Heroku app on Heroku's website. 
+
+If you're feeling really lazy, here's a button for you to press that does most things for you:
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/jchio001/organizer-backend)
 
